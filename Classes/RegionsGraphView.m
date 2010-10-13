@@ -150,7 +150,10 @@
 	for (NSString *region in sortedRegions) {
 		totalRevenue += [[revenueByRegion objectForKey:region] floatValue];
 	}
-	sortedRegions = [unitsByRegion keysSortedByValueUsingSelector:@selector(compare:)];
+	if (showUnits)
+		sortedRegions = [unitsByRegion keysSortedByValueUsingSelector:@selector(compare:)];
+	else
+		sortedRegions = [revenueByRegion keysSortedByValueUsingSelector:@selector(compare:)];
 	
 	//draw title:
 	[[UIColor darkGrayColor] set];
@@ -191,7 +194,12 @@
 		if (colorIndex < 0) colorIndex = [colors count] - 1;
 		
 		float units = [[unitsByRegion objectForKey:region] floatValue];
-		float percentage = units / totalUnits;
+		float revenue = [[revenueByRegion objectForKey:region] floatValue];
+		float percentage;
+		if (showUnits)
+			percentage = units / totalUnits;
+		else
+			percentage = revenue / totalRevenue;
 		CGContextBeginPath(c);
 		CGContextMoveToPoint(c, center.x, center.y);
 		float angle = lastAngle + (percentage * -M_PI * 2);
@@ -214,7 +222,11 @@
 		NSString *region = [sortedRegions objectAtIndex:j];
 		float revenue = [[revenueByRegion objectForKey:region] floatValue];
 		float units = [[unitsByRegion objectForKey:region] floatValue];
-		float percentage = units / totalUnits;
+		float percentage;
+		if (showUnits)
+			percentage = units / totalUnits;
+		else
+			percentage = revenue / totalRevenue;
 		UIColor *color = [colors objectAtIndex:colorIndex];
 		colorIndex--;
 		if (colorIndex < 0) colorIndex = [colors count] - 1;
@@ -233,7 +245,7 @@
 		if (showUnits)
 			legendString = [NSString stringWithFormat:@"%@%% (%i)", percentString, (int)units];
 		else
-			legendString = [NSString stringWithFormat:@"%@%%  (%@)", percentString, [[CurrencyManager sharedManager] baseCurrencyDescriptionForAmount:[NSNumber numberWithFloat:revenue] withFraction:NO]];
+			legendString = [NSString stringWithFormat:@"%@%%  (%@)", percentString, [[CurrencyManager sharedManager] baseCurrencyDescriptionForAmount:[NSNumber numberWithFloat:revenue] withFraction:YES]];
 		[legendString drawInRect:CGRectMake(205, y + 3, 110, 10) withFont:[UIFont boldSystemFontOfSize:11.0] lineBreakMode:UILineBreakModeClip alignment:UITextAlignmentLeft];
 		i++;
 	}
