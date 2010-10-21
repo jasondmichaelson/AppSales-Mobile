@@ -152,8 +152,6 @@
 	}
 	if (showUnits)
 		sortedRegions = [unitsByRegion keysSortedByValueUsingSelector:@selector(compare:)];
-	else
-		sortedRegions = [revenueByRegion keysSortedByValueUsingSelector:@selector(compare:)];
 	
 	//draw title:
 	[[UIColor darkGrayColor] set];
@@ -219,14 +217,21 @@
 	colorIndex = [colors count] - 1;
 	int i = 0;
 	for (int j = [sortedRegions count] - 1; j >= 0; j--) {
+		float percentage;
 		NSString *region = [sortedRegions objectAtIndex:j];
 		float revenue = [[revenueByRegion objectForKey:region] floatValue];
 		float units = [[unitsByRegion objectForKey:region] floatValue];
-		float percentage;
-		if (showUnits)
+		NSString *legendString;
+		if (showUnits) {
 			percentage = units / totalUnits;
-		else
+			NSString *percentString = [numberFormatter stringFromNumber:[NSNumber numberWithFloat:percentage * 100]];
+			legendString = [NSString stringWithFormat:@"%@%% (%i)", percentString, (int)units];
+		}
+		else {
 			percentage = revenue / totalRevenue;
+			NSString *percentString = [numberFormatter stringFromNumber:[NSNumber numberWithFloat:percentage * 100]];
+			legendString = [NSString stringWithFormat:@"%@%%  (%@)", percentString, [[CurrencyManager sharedManager] baseCurrencyDescriptionForAmount:[NSNumber numberWithFloat:revenue] withFraction:YES]];
+		}
 		UIColor *color = [colors objectAtIndex:colorIndex];
 		colorIndex--;
 		if (colorIndex < 0) colorIndex = [colors count] - 1;
@@ -237,15 +242,9 @@
 		CGRect legendFrame = CGRectMake(center.x + radius + 12, y, 20, 20);
 		[color set];
 		CGContextFillEllipseInRect(c, legendFrame);
-		NSString *percentString = [numberFormatter stringFromNumber:[NSNumber numberWithFloat:percentage * 100]];
 		[[UIColor whiteColor] set];
 		[region drawInRect:CGRectMake(legendFrame.origin.x, legendFrame.origin.y + 4, legendFrame.size.width, legendFrame.size.height) withFont:[UIFont boldSystemFontOfSize:10.0] lineBreakMode:UILineBreakModeClip alignment:UITextAlignmentCenter];
 		[[UIColor darkGrayColor] set];
-		NSString *legendString;
-		if (showUnits)
-			legendString = [NSString stringWithFormat:@"%@%% (%i)", percentString, (int)units];
-		else
-			legendString = [NSString stringWithFormat:@"%@%%  (%@)", percentString, [[CurrencyManager sharedManager] baseCurrencyDescriptionForAmount:[NSNumber numberWithFloat:revenue] withFraction:YES]];
 		[legendString drawInRect:CGRectMake(205, y + 3, 110, 10) withFont:[UIFont boldSystemFontOfSize:11.0] lineBreakMode:UILineBreakModeClip alignment:UITextAlignmentLeft];
 		i++;
 	}
