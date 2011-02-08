@@ -30,5 +30,5 @@
 @property (retain) UIPickerView *datePicker;
 
 - (void)reload;
-
+-(void) reloadDays;
 @end

@@ -261,6 +261,9 @@
 	}
 	else {
 		[activityIndicator stopAnimating];
+		if (self.statisticsController != nil) {
+			[self.statisticsController reloadDays];
+		}
 	}
 	statusLabel.text = [ReportManager sharedManager].reportDownloadStatus;
 }

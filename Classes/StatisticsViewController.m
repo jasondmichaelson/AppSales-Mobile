@@ -64,7 +64,12 @@
 	
 	UIBarButtonItem *graphModeButton = [[[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Mode...",nil) style:UIBarButtonItemStyleBordered target:self action:@selector(selectGraphMode)] autorelease];
 	self.navigationItem.rightBarButtonItem = graphModeButton;
-	
+
+	[self reloadDays];
+}
+
+-(void) reloadDays
+{
 	NSSortDescriptor *dateSorter = [[[NSSortDescriptor alloc] initWithKey:@"date" ascending:YES] autorelease];
 	NSArray *sortedDays = [[[ReportManager sharedManager].days allValues] sortedArrayUsingDescriptors:[NSArray arrayWithObject:dateSorter]];
 	
