@@ -222,7 +222,11 @@
 					[scanner scanUpToString:@"</SetFontStyle>" intoString:&reviewDateAndVersion];
 					reviewDateAndVersion = [reviewDateAndVersion stringByReplacingOccurrencesOfString:@"\n" withString:@""];
 					NSArray *dateVersionSplitted = [reviewDateAndVersion componentsSeparatedByString:@"- "];
-					if (dateVersionSplitted.count == 3) {
+					if (dateVersionSplitted.count == 2) {
+						NSString *date = [dateVersionSplitted objectAtIndex:1];
+						date = [date stringByTrimmingCharactersInSet:whitespaceCharacterSet];
+						reviewDate = [dateFormatter dateFromString:date];						
+					} else if (dateVersionSplitted.count == 3) {
 						NSString *version = [dateVersionSplitted objectAtIndex:1];
 						reviewVersion = [version stringByTrimmingCharactersInSet:whitespaceCharacterSet];
 						NSString *date = [dateVersionSplitted objectAtIndex:2];
@@ -341,12 +345,14 @@ static NSDictionary* getStoreInfoDictionary(NSString *countryCode, NSString *sto
 				  getStoreInfoDictionary(@"ar", @"143505", nil),
 				  getStoreInfoDictionary(@"at", @"143445", nil),
 				  getStoreInfoDictionary(@"au", @"143460", nil),
+				  getStoreInfoDictionary(@"bd", @"143446", nil),
 				  getStoreInfoDictionary(@"be", @"143446", nil),
 				  getStoreInfoDictionary(@"bg", @"143526", nil),
 				  getStoreInfoDictionary(@"br", @"143503", nil),
 				  getStoreInfoDictionary(@"bw", @"143525", nil),
 				  getStoreInfoDictionary(@"ca", @"143455", nil),
 				  getStoreInfoDictionary(@"ch", @"143459", nil),
+				  getStoreInfoDictionary(@"ci", @"143527", nil),
 				  getStoreInfoDictionary(@"cl", @"143483", nil),
 				  getStoreInfoDictionary(@"cn", @"143465", nil),
 				  getStoreInfoDictionary(@"co", @"143501", nil),
@@ -381,6 +387,7 @@ static NSDictionary* getStoreInfoDictionary(NSString *countryCode, NSString *sto
 				  getStoreInfoDictionary(@"kw", @"143493", nil),
 				  getStoreInfoDictionary(@"kz", @"143517", nil),
 				  getStoreInfoDictionary(@"lb", @"143497", nil),
+				  getStoreInfoDictionary(@"li", @"143522", nil),
 				  getStoreInfoDictionary(@"lk", @"143486", nil),
 				  getStoreInfoDictionary(@"lt", @"143520", nil),
 				  getStoreInfoDictionary(@"lu", @"143451", nil),
@@ -392,12 +399,14 @@ static NSDictionary* getStoreInfoDictionary(NSString *countryCode, NSString *sto
 				  getStoreInfoDictionary(@"mo", @"143515", nil),
 				  getStoreInfoDictionary(@"mt", @"143521", nil),
 				  getStoreInfoDictionary(@"mu", @"143533", nil),
+				  getStoreInfoDictionary(@"mv", @"143488", nil),
 				  getStoreInfoDictionary(@"mx", @"143468", nil),
 				  getStoreInfoDictionary(@"my", @"143473", nil),
 				  getStoreInfoDictionary(@"ne", @"143534", nil),
 				  getStoreInfoDictionary(@"ni", @"143512", nil),
 				  getStoreInfoDictionary(@"nl", @"143452", nil),
 				  getStoreInfoDictionary(@"no", @"143457", nil),
+				  getStoreInfoDictionary(@"np", @"143484", nil),
 				  getStoreInfoDictionary(@"nz", @"143461", nil),
 				  getStoreInfoDictionary(@"pa", @"143485", nil),
 				  getStoreInfoDictionary(@"pe", @"143507", nil),
@@ -408,6 +417,7 @@ static NSDictionary* getStoreInfoDictionary(NSString *countryCode, NSString *sto
 				  getStoreInfoDictionary(@"py", @"143513", nil),
 				  getStoreInfoDictionary(@"qa", @"143498", nil),
 				  getStoreInfoDictionary(@"ro", @"143487", nil),
+				  getStoreInfoDictionary(@"rs", @"143500", nil),
 				  getStoreInfoDictionary(@"ru", @"143469", nil),
 				  getStoreInfoDictionary(@"sa", @"143479", nil),
 				  getStoreInfoDictionary(@"se", @"143456", nil),
@@ -420,6 +430,7 @@ static NSDictionary* getStoreInfoDictionary(NSString *countryCode, NSString *sto
 				  getStoreInfoDictionary(@"tn", @"143536", nil),
 				  getStoreInfoDictionary(@"tr", @"143480", nil),
 				  getStoreInfoDictionary(@"tw", @"143470", nil),
+				  getStoreInfoDictionary(@"ua", @"143492", nil),
 				  getStoreInfoDictionary(@"ug", @"143537", nil),
 				  getStoreInfoDictionary(@"us", @"143441", usDateFormatter),
 				  getStoreInfoDictionary(@"uy", @"143514", nil),

@@ -380,8 +380,8 @@ static Day* downloadReport(NSString *originalReportsPath, NSString *ajaxName, NS
     NSString *dailyName = [salesPage stringByMatching:@"theForm:j_id_jsp_[0-9]*_6"];
     NSString *weeklyName = [dailyName stringByReplacingOccurrencesOfString:@"_6" withString:@"_22"];
     NSString *ajaxName = [dailyName stringByReplacingOccurrencesOfString:@"_6" withString:@"_2"];
-    NSString *daySelectName = [dailyName stringByReplacingOccurrencesOfString:@"_6" withString:@"_32"];
-    NSString *weekSelectName = [dailyName stringByReplacingOccurrencesOfString:@"_6" withString:@"_37"];
+    NSString *daySelectName = [dailyName stringByReplacingOccurrencesOfString:@"_6" withString:@"_43"];
+    NSString *weekSelectName = [dailyName stringByReplacingOccurrencesOfString:@"_6" withString:@"_48"];
     
     // parse days available
     NSMutableArray *availableDays = extractFormOptions(salesPage, @"theForm:datePickerSourceSelectElement");
@@ -521,6 +521,7 @@ static Day* downloadReport(NSString *originalReportsPath, NSString *ajaxName, NS
         AppManager *manager = [AppManager sharedManager];
         for (Country *c in [report.countries allValues]) {
             for (Entry *e in c.entries) {
+				if (e.transactionType==2) { continue; } //skips IAPs in app manager, so IAPs don't duplicate reviews
                 [manager createOrUpdateAppIfNeededWithID:e.productIdentifier name:e.productName];
             }
         }
