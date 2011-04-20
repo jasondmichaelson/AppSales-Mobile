@@ -169,7 +169,7 @@
             
 			NSString *storeFrontID = [storeInfo objectForKey:@"storeFrontID"];
 			NSString *storeFront = [storeFrontID stringByAppendingFormat:@"-1"];
-			[headers setObject:@"iTunes/4.2 (Macintosh; U; PPC Mac OS X 10.2)" forKey:@"User-Agent"];
+			[headers setObject:@"iTunes/10.2.1 (Macintosh; Intel Mac OS X 10.6.7) AppleWebKit/533.20.25" forKey:@"User-Agent"];
 			[headers setObject:storeFront forKey:@"X-Apple-Store-Front"];
 			[request setAllHTTPHeaderFields:headers];
 			[request setCachePolicy:NSURLRequestReloadIgnoringLocalCacheData];
@@ -226,12 +226,26 @@
 						NSString *date = [dateVersionSplitted objectAtIndex:1];
 						date = [date stringByTrimmingCharactersInSet:whitespaceCharacterSet];
 						reviewDate = [dateFormatter dateFromString:date];						
+                        if (reviewDate == nil) {
+                            NSDateFormatter *usDateFormatter = [[[NSDateFormatter alloc] init] autorelease];
+                            NSLocale *usLocale = [[[NSLocale alloc] initWithLocaleIdentifier:@"en-us"] autorelease];
+                            [usDateFormatter setLocale:usLocale];
+                            [usDateFormatter setDateFormat:@"MMM dd, yyyy"];
+                            reviewDate = [usDateFormatter dateFromString:date];
+                        }
 					} else if (dateVersionSplitted.count == 3) {
 						NSString *version = [dateVersionSplitted objectAtIndex:1];
 						reviewVersion = [version stringByTrimmingCharactersInSet:whitespaceCharacterSet];
 						NSString *date = [dateVersionSplitted objectAtIndex:2];
 						date = [date stringByTrimmingCharactersInSet:whitespaceCharacterSet];
 						reviewDate = [dateFormatter dateFromString:date];
+                        if (reviewDate == nil) {
+                            NSDateFormatter *usDateFormatter = [[[NSDateFormatter alloc] init] autorelease];
+                            NSLocale *usLocale = [[[NSLocale alloc] initWithLocaleIdentifier:@"en-us"] autorelease];
+                            [usDateFormatter setLocale:usLocale];
+                            [usDateFormatter setDateFormat:@"MMM dd, yyyy"];
+                            reviewDate = [usDateFormatter dateFromString:date];
+                        }
 					}
 					
 					[scanner scanUpToString:@"<SetFontStyle normalStyle=\"textColor\">" intoString:NULL];
