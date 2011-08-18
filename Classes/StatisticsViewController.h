@@ -37,7 +37,6 @@
 
 - (void)reloadDays;
 - (void)reload;
-- (void)reloadDays;
 - (void)updateGraphModeButton;
 
 @end

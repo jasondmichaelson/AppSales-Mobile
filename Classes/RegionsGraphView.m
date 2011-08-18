@@ -195,7 +195,7 @@
 		float revenue = [[revenueByRegion objectForKey:region] floatValue];
 		float percentage;
 		if (showUnits)
-			percentage = units / totalUnits;
+            percentage = units / totalUnits;
 		else
 			percentage = revenue / totalRevenue;
 		CGContextBeginPath(c);
