@@ -2906,7 +2906,8 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "iPhone Distribution: Jason Michaelson";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Jason Michaelson";
 				COPY_PHASE_STRIP = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
@@ -2922,6 +2923,8 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
 				OTHER_LDFLAGS = "-licucore";
+				PROVISIONING_PROFILE = "407411EC-D5EF-413C-9679-2178C5DAB29F";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "407411EC-D5EF-413C-9679-2178C5DAB29F";
 				SDKROOT = iphoneos;
 			};
 			name = Debug;
@@ -2931,7 +2934,8 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "iPhone Distribution: Jason Michaelson";
+				"CODE_SIGN_IDENTITY[sdk=*]" = "iPhone Distribution: Jason Michaelson";
 				COPY_PHASE_STRIP = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_VERSION = com.apple.compilers.llvmgcc42;
@@ -2941,6 +2945,8 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
 				OTHER_LDFLAGS = "-licucore";
+				PROVISIONING_PROFILE = "407411EC-D5EF-413C-9679-2178C5DAB29F";
+				"PROVISIONING_PROFILE[sdk=*]" = "407411EC-D5EF-413C-9679-2178C5DAB29F";
 				SDKROOT = iphoneos;
 				VALIDATE_PRODUCT = YES;
 			};
