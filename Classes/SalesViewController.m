@@ -451,7 +451,7 @@
 	}
 	if (viewMode == DashboardViewModeRevenue) {
 		float revenue = [report totalRevenueInBaseCurrencyForProductWithID:self.selectedProduct.productID];
-		NSString *labelText = [NSString stringWithFormat:@"%@%i", [[CurrencyManager sharedManager] baseCurrencyDescription], (int)roundf(revenue)];
+		NSString *labelText = [NSString stringWithFormat:@"%@%0.2f", [[CurrencyManager sharedManager] baseCurrencyDescription], revenue];
 		return labelText;
 	} else {
 		int value = 0;
@@ -602,9 +602,9 @@
 		}
 		
 		if (viewMode == DashboardViewModeRevenue) {
-			NSString *label = [NSString stringWithFormat:@"%@%i", 
+			NSString *label = [NSString stringWithFormat:@"%@%0.2f", 
 							   [[CurrencyManager sharedManager] baseCurrencyDescription], 
-							   (int)roundf([latestReport totalRevenueInBaseCurrencyForProductWithID:product.productID])];
+							   [latestReport totalRevenueInBaseCurrencyForProductWithID:product.productID]];
 			[latestValueButton setTitle:label forState:UIControlStateNormal];
 		} else {
 			int latestNumber = 0;
