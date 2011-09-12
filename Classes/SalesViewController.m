@@ -181,6 +181,7 @@
 	// Group daily reports by calendar month:
 	NSDateFormatter *monthFormatter = [[[NSDateFormatter alloc] init] autorelease];
 	[monthFormatter setDateFormat:@"MMMM yyyy"];
+	[monthFormatter setTimeZone:[NSTimeZone timeZoneForSecondsFromGMT:0]];
 	[sortedCalendarMonthReports removeAllObjects];
 	NSDateComponents *prevDateComponents = nil;
 	NSMutableArray *reportsInCurrentMonth = nil;
@@ -429,6 +430,7 @@
 		}
 	} else {
 		NSDateFormatter *monthFormatter = [[[NSDateFormatter alloc] init] autorelease];
+		[monthFormatter setTimeZone:[NSTimeZone timeZoneForSecondsFromGMT:0]];
 		[monthFormatter setDateFormat:@"MMM"];
 		if (showFiscalMonths) {
 			NSDate *date = [[self.sortedFiscalMonthReports objectAtIndex:index] startDate];
@@ -491,18 +493,20 @@
 - (NSString *)graphView:(GraphView *)graphView labelForSectionAtIndex:(NSUInteger)index
 {
 	if (selectedTab == 0) {
-		if ([((showWeeks) ? self.sortedWeeklyReports : self.sortedDailyReports) count] > 0) {
+		if ([((showWeeks) ? self.sortedWeeklyReports : self.sortedDailyReports) count] > index) {
 			Report *report = [((showWeeks) ? self.sortedWeeklyReports : self.sortedDailyReports) objectAtIndex:index];
 			NSDateFormatter *monthFormatter = [[[NSDateFormatter alloc] init] autorelease];
+			[monthFormatter setTimeZone:[NSTimeZone timeZoneForSecondsFromGMT:0]];
 			[monthFormatter setDateFormat:@"MMM '´'yy"];
 			return [monthFormatter stringFromDate:report.startDate];
 		} else {
 			return @"N/A";
 		}
 	} else {
-		if ([self.sortedCalendarMonthReports count] > 0) {
+		if ([self.sortedCalendarMonthReports count] > index) {
 			id<ReportSummary> report = [self.sortedCalendarMonthReports objectAtIndex:index];
 			NSDateFormatter *yearFormatter = [[[NSDateFormatter alloc] init] autorelease];
+			[yearFormatter setTimeZone:[NSTimeZone timeZoneForSecondsFromGMT:0]];
 			[yearFormatter setDateFormat:@"yyyy"];
 			NSString *yearString = [yearFormatter stringFromDate:report.startDate];
 			if (showFiscalMonths) {
