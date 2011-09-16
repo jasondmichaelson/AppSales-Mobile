@@ -28,6 +28,17 @@
 	<string>2.0</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleURLName</key>
+			<string>de.omzsoftware.appsales</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>appsales</string>
+			</array>
+		</dict>
+	</array>
 	<key>CFBundleVersion</key>
 	<string>2.0</string>
 	<key>LSRequiresIPhoneOS</key>
@@ -44,16 +55,12 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
-	<key>CFBundleURLTypes</key>
+	<key>UISupportedInterfaceOrientations~ipad</key>
 	<array>
-		<dict>
-			<key>CFBundleURLName</key>
-			<string>de.omzsoftware.appsales</string>
-			<key>CFBundleURLSchemes</key>
-			<array>
-				<string>appsales</string>
-			</array>
-		</dict>
+		<string>UIInterfaceOrientationPortrait</string>
+		<string>UIInterfaceOrientationLandscapeLeft</string>
+		<string>UIInterfaceOrientationLandscapeRight</string>
+		<string>UIInterfaceOrientationPortraitUpsideDown</string>
 	</array>
 </dict>
 </plist>
