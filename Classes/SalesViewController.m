@@ -61,8 +61,17 @@
 		showWeeks = [[NSUserDefaults standardUserDefaults] boolForKey:kSettingDashboardShowWeeks];
 		
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reloadData) name:ASViewSettingsDidChangeNotification object:nil];
+		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(willShowPasscodeLock:) name:ASWillShowPasscodeLockNotification object:nil];
 	}
 	return self;
+}
+
+- (void)willShowPasscodeLock:(NSNotification *)notification
+{
+	[super willShowPasscodeLock:notification];
+	if (self.selectedReportPopover.popoverVisible) {
+		[self.selectedReportPopover dismissPopoverAnimated:NO];
+	}
 }
 
 - (void)loadView
@@ -95,7 +104,21 @@
 	UISegmentedControl *tabControl = [[[UISegmentedControl alloc] initWithItems:segments] autorelease];
 	tabControl.segmentedControlStyle = UISegmentedControlStyleBar;
 	[tabControl addTarget:self action:@selector(switchTab:) forControlEvents:UIControlEventValueChanged];
-	tabControl.selectedSegmentIndex = selectedTab;
+	
+	if (iPad) {
+		if (selectedTab == 0 && showWeeks) {
+			tabControl.selectedSegmentIndex = 1;
+		} else if (selectedTab == 0 && !showWeeks) {
+			tabControl.selectedSegmentIndex = 0;
+		} else if (showFiscalMonths) {
+			tabControl.selectedSegmentIndex = 3;
+		} else {
+			tabControl.selectedSegmentIndex = 2;
+		}
+	} else {
+		tabControl.selectedSegmentIndex = selectedTab;
+	}
+	
 	self.navigationItem.titleView = tabControl;
 	
 	self.downloadReportsButtonItem = [[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemRefresh 
@@ -318,29 +341,31 @@
 	}
 	
 	[[NSUserDefaults standardUserDefaults] setInteger:selectedTab forKey:kSettingDashboardSelectedTab];
+	[[NSUserDefaults standardUserDefaults] setBool:showWeeks forKey:kSettingDashboardShowWeeks];
+	[[NSUserDefaults standardUserDefaults] setBool:showFiscalMonths forKey:kSettingShowFiscalMonths];
+	
 	[self reloadTableView];
 	[self.graphView reloadData];
 }
 
 - (void)showGraphOptions:(id)sender
 {
-	UIActionSheet *sheet = nil;
 	if (selectedTab == 0) {
-		sheet = [[[UIActionSheet alloc] initWithTitle:nil 
+		self.activeSheet = [[[UIActionSheet alloc] initWithTitle:nil 
 											 delegate:self 
 									cancelButtonTitle:NSLocalizedString(@"Cancel", nil) 
 							   destructiveButtonTitle:nil 
 									otherButtonTitles:NSLocalizedString(@"Daily Reports", nil), NSLocalizedString(@"Weekly Reports", nil), nil] autorelease];
-		sheet.tag = kSheetTagDailyGraphOptions;
+		self.activeSheet.tag = kSheetTagDailyGraphOptions;
 	} else {
-		sheet = [[[UIActionSheet alloc] initWithTitle:nil 
+		self.activeSheet = [[[UIActionSheet alloc] initWithTitle:nil 
 											 delegate:self 
 									cancelButtonTitle:NSLocalizedString(@"Cancel", nil) 
 							   destructiveButtonTitle:nil 
 									otherButtonTitles:NSLocalizedString(@"Calendar Months", nil), NSLocalizedString(@"Fiscal Months", nil), nil] autorelease];
-		sheet.tag = kSheetTagMonthlyGraphOptions;
+		self.activeSheet.tag = kSheetTagMonthlyGraphOptions;
 	}
-	[sheet showInView:self.view];
+	[self.activeSheet showInView:self.view];
 }
 
 - (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
@@ -706,7 +731,7 @@
 - (void)selectAdvancedViewMode:(UILongPressGestureRecognizer *)gestureRecognizer
 {
 	if (gestureRecognizer.state == UIGestureRecognizerStateBegan) {
-		UIActionSheet *sheet = [[[UIActionSheet alloc] initWithTitle:nil 
+		self.activeSheet = [[[UIActionSheet alloc] initWithTitle:nil 
 															delegate:self 
 												   cancelButtonTitle:NSLocalizedString(@"Cancel", nil) 
 											  destructiveButtonTitle:nil 
@@ -717,8 +742,8 @@
 								 NSLocalizedString(@"Educational Sales", nil), 
 								 NSLocalizedString(@"Gift Purchases", nil), 
 								 NSLocalizedString(@"Promo Codes", nil), nil] autorelease];
-		sheet.tag = kSheetTagAdvancedViewMode;
-		[sheet showInView:self.navigationController.view];
+		self.activeSheet.tag = kSheetTagAdvancedViewMode;
+		[self.activeSheet showInView:self.navigationController.view];
 	}
 }
 
