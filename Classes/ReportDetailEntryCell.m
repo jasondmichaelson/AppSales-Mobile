@@ -40,8 +40,7 @@
 		barBackgroundView.autoresizingMask = UIViewAutoresizingFlexibleWidth;
 		[self.contentView addSubview:barBackgroundView];
 		
-		barView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 50, 17)];
-		barView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleRightMargin;
+		barView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 0, 17)];
 		barView.backgroundColor = [UIColor colorWithRed:0.541 green:0.612 blue:0.671 alpha:1.0];
 		[barBackgroundView addSubview:barView];
 		
@@ -54,6 +53,7 @@
 		[barBackgroundView addSubview:percentageLabel];
 		
 		subtitleLabel = [[UILabel alloc] initWithFrame:CGRectMake(130, 24, 147, 12)];
+        subtitleLabel.autoresizingMask = UIViewAutoresizingFlexibleWidth;
 		subtitleLabel.backgroundColor = [UIColor clearColor];
 		subtitleLabel.font = [UIFont systemFontOfSize:11.0];
 		subtitleLabel.textColor = [UIColor darkGrayColor];
@@ -95,7 +95,7 @@
 	
 	if (!hideBar) {
 		percentageLabel.text = [percentageFormatter stringFromNumber:[NSNumber numberWithFloat:percentage]];
-		barView.frame = CGRectMake(0, 0, barBackgroundView.bounds.size.width * percentage, 17);
+		barView.frame = CGRectMake(0, 0, barBackgroundView.bounds.size.width * MAX(percentage, 0.0), 17);
 	}
 	
 	if (product) {
