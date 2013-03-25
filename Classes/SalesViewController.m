@@ -558,7 +558,7 @@
     
     NSString *labelText = @"";
     if (viewMode == DashboardViewModeRevenue) {
-        labelText = [NSString stringWithFormat:@"%@%i", [[CurrencyManager sharedManager] baseCurrencyDescription], (int)roundf(value)];
+        labelText = [NSString stringWithFormat:@"%@%0.2f", [[CurrencyManager sharedManager] baseCurrencyDescription], value];
     } else {
         labelText = [NSString stringWithFormat:@"%i", (int)value];
     }
@@ -723,9 +723,9 @@
 		}
 		
 		if (viewMode == DashboardViewModeRevenue) {
-			NSString *label = [NSString stringWithFormat:@"%@%i", 
+			NSString *label = [NSString stringWithFormat:@"%@%0.2f", 
 							   [[CurrencyManager sharedManager] baseCurrencyDescription], 
-							   (int)roundf([latestReport totalRevenueInBaseCurrencyForProductWithID:product.productID])];
+							   [latestReport totalRevenueInBaseCurrencyForProductWithID:product.productID]];
 			[latestValueButton setTitle:label forState:UIControlStateNormal];
 		} else {
 			int latestNumber = 0;
