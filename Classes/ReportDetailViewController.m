@@ -50,10 +50,12 @@
 	[super loadView];
 	self.view.backgroundColor = [UIColor scrollViewTexturedBackgroundColor];
 	
+    CGFloat top = ([[UIDevice currentDevice].systemVersion floatValue] >= 7.0) ? 64 : 0;
+    
 	viewMode = (self.selectedProduct) ? ReportDetailViewModeCountries : ReportDetailViewModeProducts;
 	
 	mapHidden = mapHidden || UIInterfaceOrientationIsLandscape(self.interfaceOrientation);
-	self.mapView = [[[MapView alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, 208)] autorelease];
+	self.mapView = [[[MapView alloc] initWithFrame:CGRectMake(0, top, self.view.bounds.size.width, 208)] autorelease];
 	mapView.autoresizingMask = UIViewAutoresizingFlexibleWidth;
 	mapView.alpha = (mapHidden) ? 0.0 : 1.0;
 	if (!mapHidden) {
@@ -67,7 +69,7 @@
 	mapShadowView.alpha = (mapHidden) ? 0.0 : 1.0;
 	[self.view addSubview:mapShadowView];
 	
-	CGRect headerFrame = (mapHidden) ? CGRectMake(0, 0, self.view.bounds.size.width, 20) : CGRectMake(0, 208-20, self.view.bounds.size.width, 20);
+	CGRect headerFrame = (mapHidden) ? CGRectMake(0, 0, self.view.bounds.size.width, 20) : CGRectMake(0, top+208-20, self.view.bounds.size.width, 20);
 	self.headerView = [[[UIImageView alloc] initWithFrame:headerFrame] autorelease];
 	headerView.autoresizingMask = UIViewAutoresizingFlexibleWidth;
 	headerView.image = [UIImage imageNamed:@"DetailHeader.png"];
@@ -85,7 +87,7 @@
 	
 	CGFloat toolbarHeight = UIInterfaceOrientationIsLandscape(self.interfaceOrientation) ? 32.0 : 44.0;
 	
-	CGRect tableViewFrame = (mapHidden) ? CGRectMake(0, 20, self.view.bounds.size.width, self.view.bounds.size.height - 20) : CGRectMake(0, 208, self.view.bounds.size.width, self.view.bounds.size.height - 208);
+	CGRect tableViewFrame = (mapHidden) ? CGRectMake(0, top+20, self.view.bounds.size.width, self.view.bounds.size.height - 20 - top) : CGRectMake(0, top+208, self.view.bounds.size.width, self.view.bounds.size.height - 208 - top);
 	self.tableView = [[[UITableView alloc] initWithFrame:tableViewFrame style:UITableViewStylePlain] autorelease];
 	tableView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
 	tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
@@ -101,7 +103,7 @@
 	[self.view addSubview:tableView];
 	
 	self.shadowView = [[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"ShadowBottom.png"]] autorelease];
-	shadowView.frame = (mapHidden) ? CGRectMake(0, 20, self.view.bounds.size.width, 20) : CGRectMake(0, 208, self.view.bounds.size.width, 20);
+	shadowView.frame = (mapHidden) ? CGRectMake(0, top+20, self.view.bounds.size.width, 20) : CGRectMake(0, top+208, self.view.bounds.size.width, 20);
 	shadowView.autoresizingMask = UIViewAutoresizingFlexibleWidth;
 	shadowView.alpha = 0.0;
 	[self.view addSubview:shadowView];

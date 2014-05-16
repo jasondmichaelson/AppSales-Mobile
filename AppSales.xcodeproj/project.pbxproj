@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		59DCDF2D17A3047600262E2B /* JSONKit.m in Sources */ = {isa = PBXBuildFile; fileRef = 59DCDF2C17A3047600262E2B /* JSONKit.m */; };
+		59DCDF3017A3064700262E2B /* SMXMLDocument.m in Sources */ = {isa = PBXBuildFile; fileRef = 59DCDF2F17A3064600262E2B /* SMXMLDocument.m */; };
 		6D81575414CB3C2B005E8F3F /* KKKeychain.m in Sources */ = {isa = PBXBuildFile; fileRef = 6D81574914CB3C2B005E8F3F /* KKKeychain.m */; };
 		6D81575514CB3C2B005E8F3F /* KKPasscodeLock.m in Sources */ = {isa = PBXBuildFile; fileRef = 6D81574B14CB3C2B005E8F3F /* KKPasscodeLock.m */; };
 		6D81575614CB3C2B005E8F3F /* KKPasscodeSettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6D81574D14CB3C2B005E8F3F /* KKPasscodeSettingsViewController.m */; };
@@ -665,6 +667,10 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		59DCDF2A17A3044E00262E2B /* JSONKit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = JSONKit.h; path = Classes/JSONKit.h; sourceTree = "<group>"; };
+		59DCDF2C17A3047600262E2B /* JSONKit.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = JSONKit.m; path = Classes/JSONKit.m; sourceTree = "<group>"; };
+		59DCDF2E17A3064600262E2B /* SMXMLDocument.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SMXMLDocument.h; path = Classes/SMXMLDocument.h; sourceTree = "<group>"; };
+		59DCDF2F17A3064600262E2B /* SMXMLDocument.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SMXMLDocument.m; path = Classes/SMXMLDocument.m; sourceTree = "<group>"; };
 		6D81574814CB3C2B005E8F3F /* KKKeychain.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KKKeychain.h; sourceTree = "<group>"; };
 		6D81574914CB3C2B005E8F3F /* KKKeychain.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KKKeychain.m; sourceTree = "<group>"; };
 		6D81574A14CB3C2B005E8F3F /* KKPasscodeLock.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KKPasscodeLock.h; sourceTree = "<group>"; };
@@ -1723,6 +1729,10 @@
 			children = (
 				7F89BCDC13DFA45F001C607F /* ReviewDownloadManager.h */,
 				7F89BCDD13DFA45F001C607F /* ReviewDownloadManager.m */,
+				59DCDF2A17A3044E00262E2B /* JSONKit.h */,
+				59DCDF2C17A3047600262E2B /* JSONKit.m */,
+				59DCDF2E17A3064600262E2B /* SMXMLDocument.h */,
+				59DCDF2F17A3064600262E2B /* SMXMLDocument.m */,
 			);
 			name = "Review Download";
 			path = ..;
@@ -2401,7 +2411,7 @@
 		7F709D1E13BC98860008DBAD /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0430;
+				LastUpgradeCheck = 0500;
 			};
 			buildConfigurationList = 7F709D2113BC98860008DBAD /* Build configuration list for PBXProject "AppSales" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -3082,6 +3092,8 @@
 				7FDCCEAF1594318400124140 /* trees.c in Sources */,
 				7FDCCEB01594318400124140 /* uncompr.c in Sources */,
 				7FDCCEB11594318400124140 /* zutil.c in Sources */,
+				59DCDF2D17A3047600262E2B /* JSONKit.m in Sources */,
+				59DCDF3017A3064700262E2B /* SMXMLDocument.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3092,8 +3104,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "iPhone Distribution";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
 				COPY_PHASE_STRIP = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
@@ -3108,7 +3120,10 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 4.2;
+				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = "-licucore";
+				PROVISIONING_PROFILE = "";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
 				SDKROOT = iphoneos;
 				VALID_ARCHS = armv7;
 			};
@@ -3118,8 +3133,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "iPhone Distribution";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
 				COPY_PHASE_STRIP = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_VERSION = "";
@@ -3129,6 +3144,8 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 4.2;
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
 				OTHER_LDFLAGS = "-licucore";
+				PROVISIONING_PROFILE = "";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
 				SDKROOT = iphoneos;
 				VALIDATE_PRODUCT = YES;
 				VALID_ARCHS = armv7;

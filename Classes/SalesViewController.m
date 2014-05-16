@@ -82,8 +82,10 @@
 	
 	BOOL iPad = ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad);
 	
-	CGFloat graphHeight = iPad ? 450.0 : (self.view.bounds.size.height - 44.0) * 0.5;
-	self.graphView = [[[GraphView alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, graphHeight)] autorelease];
+    CGFloat top = ([[UIDevice currentDevice].systemVersion floatValue] >= 7.0) ? 64 : 0;
+    CGFloat graphHeight = iPad ? 450.0 : (self.view.bounds.size.height - 44.0) * 0.5;
+    graphHeight -= top;
+    self.graphView = [[[GraphView alloc] initWithFrame:CGRectMake(0, top, self.view.bounds.size.width, graphHeight)] autorelease];
 	graphView.autoresizingMask = UIViewAutoresizingFlexibleWidth;
 	graphView.delegate = self;
 	graphView.dataSource = self;
@@ -491,7 +493,10 @@
 		} else {
 			NSDateComponents *dateComponents = [calendar components:NSDayCalendarUnit fromDate:report.startDate];
 			NSInteger day = [dateComponents day];
-			return [NSString stringWithFormat:@"%i", day];
+            NSDateFormatter *weekday = [[[NSDateFormatter alloc] init] autorelease];
+            [weekday setDateFormat:@"EEE"];
+            return [NSString stringWithFormat:@"%i\n%@", day, [weekday stringFromDate:report.startDate]];
+//			return [NSString stringWithFormat:@"%i", day];
 		}
 	} else {
 		NSDateFormatter *monthFormatter = [[[NSDateFormatter alloc] init] autorelease];

@@ -84,7 +84,7 @@
 		NSMutableArray *availableReportDateStrings = [NSMutableArray array];
 		NSMutableSet *availableReportDates = [NSMutableSet set];
 		
-		NSInteger maxNumberOfAvailableReports = [dateType isEqualToString:@"Daily"] ? 14 : 13;
+		NSInteger maxNumberOfAvailableReports = [dateType isEqualToString:@"Daily"] ? 35 : 52;
 		for (int i=1; i<=maxNumberOfAvailableReports; i++) {
 			NSDate *date = nil;
 			if ([dateType isEqualToString:@"Daily"]) {
@@ -305,7 +305,7 @@
 		});
 		NSScanner *paymentsScanner = [NSScanner scannerWithString:loginPage];
 		NSString *paymentsAction = nil;
-		[paymentsScanner scanUpToString:@"alt=\"Payments and Financial Reports" intoString:NULL];
+		[paymentsScanner scanUpToString:@"<p>Manage your contracts, tax, and banking information.</p>" intoString:NULL];
 		[paymentsScanner scanUpToString:@"<a href=\"" intoString:NULL];
 		[paymentsScanner scanString:@"<a href=\"" intoString:NULL];
 		[paymentsScanner scanUpToString:@"\"" intoString:&paymentsAction];

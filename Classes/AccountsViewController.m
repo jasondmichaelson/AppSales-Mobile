@@ -431,7 +431,7 @@
 																			defaultValue:[productSortByValue isEqualToString:@"productId"]];
 	FieldSpecifier *productSortingByColorField = [FieldSpecifier checkFieldWithKey:@"sortby.color" title:@"Color" 
 																		defaultValue:[productSortByValue isEqualToString:@"color"]];
-	NSMutableArray *productSortingFields = [NSArray arrayWithObjects:productSortingByProductIdField, productSortingByColorField, nil];
+	NSMutableArray *productSortingFields = [NSMutableArray arrayWithObjects:productSortingByProductIdField, productSortingByColorField, nil];
 
 
 	FieldSectionSpecifier *productSortingSection = [FieldSectionSpecifier sectionWithFields:productSortingFields
@@ -708,12 +708,8 @@
 		}
 	} else if (alertView.tag == kAlertTagConfirmDelete) {
 		if (buttonIndex != [alertView cancelButtonIndex]) {
-			MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.navigationController.view animated:YES];
-			[hud setLabelText:NSLocalizedString(@"Deleting Account...", nil)];
-			
-			ASAccount *account = [[self.selectedAccount retain] autorelease];
+			[self deleteAccount:self.selectedAccount];
 			[self.navigationController popViewControllerAnimated:YES];
-			[self performSelector:@selector(deleteAccount:) withObject:account afterDelay:0.1];
 		}
 	}
 }
