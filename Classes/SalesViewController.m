@@ -44,6 +44,8 @@
 		self.title = ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) ? NSLocalizedString(@"Sales", nil) : [account displayName];
 		self.tabBarItem.image = [UIImage imageNamed:@"Sales.png"];
 		
+		self.edgesForExtendedLayout = UIRectEdgeNone;
+		
 		sortedDailyReports = [NSMutableArray new];
 		sortedWeeklyReports = [NSMutableArray new];
 		sortedCalendarMonthReports = [NSMutableArray new];
@@ -82,10 +84,8 @@
 	
 	BOOL iPad = ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad);
 	
-    CGFloat top = ([[UIDevice currentDevice].systemVersion floatValue] >= 7.0) ? 64 : 0;
-    CGFloat graphHeight = iPad ? 450.0 : (self.view.bounds.size.height - 44.0) * 0.5;
-    graphHeight -= top;
-    self.graphView = [[[GraphView alloc] initWithFrame:CGRectMake(0, top, self.view.bounds.size.width, graphHeight)] autorelease];
+	CGFloat graphHeight = iPad ? 450.0 : (self.view.bounds.size.height - 44.0) * 0.5;
+	self.graphView = [[[GraphView alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, graphHeight)] autorelease];
 	graphView.autoresizingMask = UIViewAutoresizingFlexibleWidth;
 	graphView.delegate = self;
 	graphView.dataSource = self;
@@ -105,7 +105,6 @@
 		segments = [NSArray arrayWithObjects:NSLocalizedString(@"Reports", nil), NSLocalizedString(@"Months", nil), nil];
 	}
 	UISegmentedControl *tabControl = [[[UISegmentedControl alloc] initWithItems:segments] autorelease];
-	tabControl.segmentedControlStyle = UISegmentedControlStyleBar;
 	[tabControl addTarget:self action:@selector(switchTab:) forControlEvents:UIControlEventValueChanged];
 	
 	if (iPad) {
@@ -493,10 +492,22 @@
 		} else {
 			NSDateComponents *dateComponents = [calendar components:NSDayCalendarUnit fromDate:report.startDate];
 			NSInteger day = [dateComponents day];
-            NSDateFormatter *weekday = [[[NSDateFormatter alloc] init] autorelease];
-            [weekday setDateFormat:@"EEE"];
-            return [NSString stringWithFormat:@"%i\n%@", day, [weekday stringFromDate:report.startDate]];
-//			return [NSString stringWithFormat:@"%i", day];
+            NSDateComponents *weekdayComponents =[calendar components:NSWeekdayCalendarUnit fromDate:report.startDate];
+            
+            NSInteger weekdayNumber = [weekdayComponents weekday];
+            // weekday 1 = Sunday for Gregorian calendar
+            NSString *weekDayText;
+            switch (weekdayNumber) {
+                case 1: weekDayText = @"Sun"; break;
+                case 2: weekDayText = @"Mon"; break;
+                case 3: weekDayText = @"Tue"; break;
+                case 4: weekDayText = @"Wed"; break;
+                case 5: weekDayText = @"Thu"; break;
+                case 6: weekDayText = @"Fri"; break;
+                case 7: weekDayText = @"Sat"; break;
+                default: weekDayText = @""; break;
+            }
+            return [NSString stringWithFormat:@"%i\n%@", day, weekDayText];
 		}
 	} else {
 		NSDateFormatter *monthFormatter = [[[NSDateFormatter alloc] init] autorelease];
@@ -707,7 +718,7 @@
 	if (selectedTab == 0 || selectedTab == 1) {
 		UIButton *latestValueButton = [UIButton buttonWithType:UIButtonTypeCustom];
 		latestValueButton.frame = CGRectMake(0, 0, 64, 28);
-		latestValueButton.titleLabel.font = [UIFont boldSystemFontOfSize:16.0];
+		latestValueButton.titleLabel.font = [UIFont systemFontOfSize:16.0];
 		latestValueButton.titleLabel.shadowColor = [UIColor colorWithWhite:0.0 alpha:0.5];
 		latestValueButton.titleLabel.shadowOffset = CGSizeMake(0, -1);
 		[latestValueButton setBackgroundImage:[UIImage imageNamed:@"LatestValueButton.png"] forState:UIControlStateNormal];
@@ -728,9 +739,10 @@
 		}
 		
 		if (viewMode == DashboardViewModeRevenue) {
-			NSString *label = [NSString stringWithFormat:@"%@%0.2f", 
+			NSString *label = [NSString stringWithFormat:@"%@%0.2f",
 							   [[CurrencyManager sharedManager] baseCurrencyDescription], 
 							   [latestReport totalRevenueInBaseCurrencyForProductWithID:product.productID]];
+
 			[latestValueButton setTitle:label forState:UIControlStateNormal];
 		} else {
 			int latestNumber = 0;

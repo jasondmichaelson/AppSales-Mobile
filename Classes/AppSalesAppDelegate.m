@@ -15,10 +15,10 @@
 #import "SSKeychain.h"
 #import "ASAccount.h"
 #import "SalesViewController.h"
-#import "ReviewsViewController.h"
 #import "PaymentsViewController.h"
 #import "PromoCodesViewController.h"
 #import "PromoCodesLicenseViewController.h"
+#import "ReviewsViewController.h"
 
 @implementation AppSalesAppDelegate
 
@@ -31,6 +31,7 @@
 	
 	srandom(time(NULL));
 	self.window = [[[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]] autorelease];
+	self.window.tintColor = [UIColor colorWithRed:0.28 green:0.51 blue:0.69 alpha:1.0];
 	
 	NSString *currencyCode = [[NSLocale currentLocale] objectForKey:NSLocaleCurrencyCode];
 	if (![[CurrencyManager sharedManager].availableCurrencies containsObject:currencyCode]) {
@@ -42,15 +43,15 @@
 							  currencyCode, @"CurrencyManagerBaseCurrency",
 							  nil];
 	[[NSUserDefaults standardUserDefaults] registerDefaults:defaults];
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(promoCodeLicenseAgreementLoaded:) name:@"PromoCodeOperationLoadedLicenseAgreementNotification" object:nil];
 
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(promoCodeLicenseAgreementLoaded:) name:@"PromoCodeOperationLoadedLicenseAgreementNotification" object:nil];
-	
 	BOOL iPad = [[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad;
 	if (!iPad) {
 		AccountsViewController *rootViewController = [[[AccountsViewController alloc] initWithStyle:UITableViewStyleGrouped] autorelease];
 		rootViewController.managedObjectContext = self.managedObjectContext;
 		UINavigationController *navigationController = [[[UINavigationController alloc] initWithRootViewController:rootViewController] autorelease];
 		navigationController.toolbarHidden = NO;
+		navigationController.navigationBar.translucent = NO;
 		self.accountsViewController = rootViewController;
 		
 		self.window.rootViewController = navigationController;
@@ -58,9 +59,10 @@
 	} else {
 		self.accountsViewController = [[[AccountsViewController alloc] initWithStyle:UITableViewStyleGrouped] autorelease];
 		self.accountsViewController.managedObjectContext = self.managedObjectContext;
-		self.accountsViewController.contentSizeForViewInPopover = CGSizeMake(320, 480);
+		self.accountsViewController.preferredContentSize = CGSizeMake(320, 480);
 		self.accountsViewController.delegate = self;
 		UINavigationController *accountsNavController = [[[UINavigationController alloc] initWithRootViewController:self.accountsViewController] autorelease];
+		accountsNavController.navigationBar.translucent = NO;
 		accountsNavController.toolbarHidden = NO;
 		self.accountsPopover = [[[UIPopoverController alloc] initWithContentViewController:accountsNavController] autorelease];	
 		[self loadAccount:nil];
@@ -81,7 +83,7 @@
 	
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reportDownloadFailed:) name:ASReportDownloadFailedNotification object:nil];
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(promoCodeDownloadFailed:) name:ASPromoCodeDownloadFailedNotification object:nil];
-	
+
 	if ([launchOptions objectForKey:UIApplicationLaunchOptionsURLKey]) {
 		[self.accountsViewController performSelector:@selector(downloadReports:) withObject:nil afterDelay:0.0];
 	}
@@ -106,7 +108,7 @@
 
 - (void)selectAccount:(id)sender
 {
-	if (!self.window.rootViewController.modalViewController) {
+	if (!self.window.rootViewController.presentedViewController) {
 		[self.accountsPopover presentPopoverFromRect:CGRectMake(50, 50, 1, 1) inView:self.window.rootViewController.view permittedArrowDirections:UIPopoverArrowDirectionUp animated:YES];
 	}
 }
@@ -134,32 +136,36 @@
 
 - (void)loadAccount:(ASAccount *)account
 {
-	UIBarButtonItem *selectAccountButtonItem1 = [[[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Account", nil) style:UIBarButtonItemStyleBordered target:self action:@selector(selectAccount:)] autorelease];
-	UIBarButtonItem *selectAccountButtonItem2 = [[[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Account", nil) style:UIBarButtonItemStyleBordered target:self action:@selector(selectAccount:)] autorelease];
-	UIBarButtonItem *selectAccountButtonItem3 = [[[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Account", nil) style:UIBarButtonItemStyleBordered target:self action:@selector(selectAccount:)] autorelease];
-	UIBarButtonItem *selectAccountButtonItem4 = [[[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Account", nil) style:UIBarButtonItemStyleBordered target:self action:@selector(selectAccount:)] autorelease];
+    UIBarButtonItem *selectAccountButtonItem1 = [[[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Account", nil) style:UIBarButtonItemStyleBordered target:self action:@selector(selectAccount:)] autorelease];
+    UIBarButtonItem *selectAccountButtonItem2 = [[[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Account", nil) style:UIBarButtonItemStyleBordered target:self action:@selector(selectAccount:)] autorelease];
+    UIBarButtonItem *selectAccountButtonItem3 = [[[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Account", nil) style:UIBarButtonItemStyleBordered target:self action:@selector(selectAccount:)] autorelease];
+    UIBarButtonItem *selectAccountButtonItem4 = [[[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Account", nil) style:UIBarButtonItemStyleBordered target:self action:@selector(selectAccount:)] autorelease];
 	
 	SalesViewController *salesVC = [[[SalesViewController alloc] initWithAccount:account] autorelease];
 	salesVC.navigationItem.leftBarButtonItem = selectAccountButtonItem1;
 	UINavigationController *salesNavController = [[[UINavigationController alloc] initWithRootViewController:salesVC] autorelease];
+	salesNavController.navigationBar.translucent = NO;
 	
-	ReviewsViewController *reviewsVC = [[[ReviewsViewController alloc] initWithAccount:account] autorelease];
-	reviewsVC.navigationItem.leftBarButtonItem = selectAccountButtonItem2;
-	UINavigationController *reviewsNavController = [[[UINavigationController alloc] initWithRootViewController:reviewsVC] autorelease];
-	
-	PaymentsViewController *paymentsVC = [[[PaymentsViewController alloc] initWithAccount:account] autorelease];
-	paymentsVC.navigationItem.leftBarButtonItem = selectAccountButtonItem3;
-	UINavigationController *paymentsNavController = [[[UINavigationController alloc] initWithRootViewController:paymentsVC] autorelease];
-	
-	PromoCodesViewController *promoVC = [[[PromoCodesViewController alloc] initWithAccount:account] autorelease];
-	promoVC.navigationItem.leftBarButtonItem = selectAccountButtonItem4;
-	UINavigationController *promoNavController = [[[UINavigationController alloc] initWithRootViewController:promoVC] autorelease];
-	promoNavController.toolbarHidden = NO;
-	promoNavController.toolbar.barStyle = UIBarStyleBlackOpaque;
-	
-	UITabBarController *tabController = [[[UITabBarController alloc] initWithNibName:nil bundle:nil] autorelease];
-	[tabController setViewControllers:[NSArray arrayWithObjects:salesNavController, reviewsNavController, paymentsNavController, promoNavController, nil]];
-	
+    ReviewsViewController *reviewsVC = [[[ReviewsViewController alloc] initWithAccount:account] autorelease];
+    reviewsVC.navigationItem.leftBarButtonItem = selectAccountButtonItem2;
+    UINavigationController *reviewsNavController = [[[UINavigationController alloc] initWithRootViewController:reviewsVC] autorelease];
+	reviewsNavController.navigationBar.translucent = NO;
+    
+    PaymentsViewController *paymentsVC = [[[PaymentsViewController alloc] initWithAccount:account] autorelease];
+    paymentsVC.navigationItem.leftBarButtonItem = selectAccountButtonItem3;
+    UINavigationController *paymentsNavController = [[[UINavigationController alloc] initWithRootViewController:paymentsVC] autorelease];
+	paymentsNavController.navigationBar.translucent = NO;
+    
+    PromoCodesViewController *promoVC = [[[PromoCodesViewController alloc] initWithAccount:account] autorelease];
+    promoVC.navigationItem.leftBarButtonItem = selectAccountButtonItem4;
+    UINavigationController *promoNavController = [[[UINavigationController alloc] initWithRootViewController:promoVC] autorelease];
+    promoNavController.toolbarHidden = NO;
+    promoNavController.toolbar.barStyle = UIBarStyleBlackOpaque;
+	promoNavController.navigationBar.translucent = NO;
+    
+    UITabBarController *tabController = [[[UITabBarController alloc] initWithNibName:nil bundle:nil] autorelease];
+    [tabController setViewControllers:[NSArray arrayWithObjects:salesNavController, reviewsNavController, paymentsNavController, promoNavController, nil]];
+    
 	self.window.rootViewController = tabController;
 }
 
@@ -260,14 +266,14 @@
 			nav.navigationBar.barStyle = accountsViewController.navigationController.navigationBar.barStyle;    
 		}
 		UIViewController *viewControllerForPresentingPasscode = nil;
-		if (self.window.rootViewController.modalViewController) {
-			if ([self.window.rootViewController.modalViewController isKindOfClass:[UINavigationController class]] 
-				&& [[[(UINavigationController *)self.window.rootViewController.modalViewController viewControllers] objectAtIndex:0] isKindOfClass:[KKPasscodeViewController class]]) {
+		if (self.window.rootViewController.presentedViewController) {
+			if ([self.window.rootViewController.presentedViewController isKindOfClass:[UINavigationController class]]
+				&& [[[(UINavigationController *)self.window.rootViewController.presentedViewController viewControllers] objectAtIndex:0] isKindOfClass:[KKPasscodeViewController class]]) {
 				//The passcode dialog is already shown...
 				return;
 			}
 			//We're in the settings or add account dialog...
-			viewControllerForPresentingPasscode = self.window.rootViewController.modalViewController;
+			viewControllerForPresentingPasscode = self.window.rootViewController.presentedViewController;
 		} else {
 			viewControllerForPresentingPasscode = self.window.rootViewController;
 		}
@@ -275,21 +281,13 @@
 			[self.accountsPopover dismissPopoverAnimated:NO];
 		}
 		[[NSNotificationCenter defaultCenter] postNotificationName:ASWillShowPasscodeLockNotification object:self];
-		[viewControllerForPresentingPasscode presentModalViewController:nav animated:NO];
+		[viewControllerForPresentingPasscode presentViewController:nav animated:NO completion:nil];
 	}
 }
 
 - (void)applicationWillTerminate:(UIApplication *)application
 {
 	[self saveContext];
-}
-
-- (void)promoCodeLicenseAgreementLoaded:(NSNotification *)notification
-{
-	NSString *licenseAgreement = [[notification userInfo] objectForKey:@"licenseAgreement"];
-	PromoCodesLicenseViewController *vc = [[[PromoCodesLicenseViewController alloc] initWithLicenseAgreement:licenseAgreement operation:[notification object]] autorelease];
-	UINavigationController *navController = [[[UINavigationController alloc] initWithRootViewController:vc] autorelease];
-	[self.window.rootViewController presentModalViewController:navController animated:YES];
 }
 
 #pragma mark - Core Data
@@ -304,6 +302,14 @@
 		abort();
 	}
 	[self.persistentStoreCoordinator unlock];
+}
+
+- (void)promoCodeLicenseAgreementLoaded:(NSNotification *)notification
+{
+    NSString *licenseAgreement = [[notification userInfo] objectForKey:@"licenseAgreement"];
+    PromoCodesLicenseViewController *vc = [[[PromoCodesLicenseViewController alloc] initWithLicenseAgreement:licenseAgreement operation:[notification object]] autorelease];
+    UINavigationController *navController = [[[UINavigationController alloc] initWithRootViewController:vc] autorelease];
+    [self.window.rootViewController presentViewController:navController animated:YES completion:nil];
 }
 
 #pragma mark - Core Data stack
@@ -390,13 +396,13 @@
 
 - (void)promoCodeDownloadFailed:(NSNotification *)notification
 {
-	NSString *errorDescription = [[notification userInfo] objectForKey:kASPromoCodeDownloadFailedErrorDescription];
-	NSString *alertMessage = [NSString stringWithFormat:@"An error occured while downloading the promo codes (%@).", errorDescription];
-	[[[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Error", nil) 
-								 message:alertMessage 
-								delegate:nil 
-					   cancelButtonTitle:NSLocalizedString(@"OK", nil) 
-					   otherButtonTitles:nil] autorelease] show];
+    NSString *errorDescription = [[notification userInfo] objectForKey:kASPromoCodeDownloadFailedErrorDescription];
+    NSString *alertMessage = [NSString stringWithFormat:@"An error occured while downloading the promo codes (%@).", errorDescription];
+    [[[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Error", nil)
+                                 message:alertMessage
+                                delegate:nil
+                       cancelButtonTitle:NSLocalizedString(@"OK", nil)
+                       otherButtonTitles:nil] autorelease] show];
 }
 
 - (void)dealloc

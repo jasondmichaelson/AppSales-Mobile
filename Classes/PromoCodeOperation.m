@@ -85,7 +85,7 @@
 		if (loginPage) {
 			NSScanner *manageAppsScanner = [NSScanner scannerWithString:loginPage];
 			NSString *paymentsAction = nil;
-			[manageAppsScanner scanUpToString:@"alt=\"Manage Your Applications" intoString:NULL];
+			[manageAppsScanner scanUpToString:@"manageapps.png" intoString:NULL];
 			[manageAppsScanner scanUpToString:@"<a href=\"" intoString:NULL];
 			[manageAppsScanner scanString:@"<a href=\"" intoString:NULL];
 			[manageAppsScanner scanUpToString:@"\"" intoString:&paymentsAction];
@@ -110,27 +110,48 @@
 		if (manageAppsPage) {
 			NSScanner *searchFormScanner = [NSScanner scannerWithString:manageAppsPage];
 			NSString *searchFormAction = nil;			
-			if ([searchFormScanner scanUpToString:@"<div id=\"titleSearch" intoString:NULL] && [searchFormScanner scanUpToString:@"action=\"" intoString:NULL] && [searchFormScanner scanString:@"action=\"" intoString:NULL] && [searchFormScanner scanUpToString:@"\"" intoString:&searchFormAction]) {
+			if ([searchFormScanner scanUpToString:@"<div class=\"content-container" intoString:NULL] && [searchFormScanner scanUpToString:@"<form name=\"mainForm" intoString:NULL] && [searchFormScanner scanUpToString:@"action=\"" intoString:NULL] && [searchFormScanner scanString:@"action=\"" intoString:NULL] && [searchFormScanner scanUpToString:@"\"" intoString:&searchFormAction]) {
 				NSString *nameCompareFieldName = [PromoCodeOperation scanNameForFormField:@"search-param-compare-name" withScanner:searchFormScanner];
 				NSString *nameValueFieldName = [PromoCodeOperation scanNameForFormField:@"search-param-value-name" withScanner:searchFormScanner];
+                NSString *hiddenFieldName1 = [PromoCodeOperation scanFormFieldType:@"hidden" withScanner:searchFormScanner];
 				NSString *appleIDFieldName = [PromoCodeOperation scanNameForFormField:@"search-param-value-appleId" withScanner:searchFormScanner];
-				NSString *statusFieldName = [PromoCodeOperation scanNameForFormField:@"search-param-value-statusSearch" withScanner:searchFormScanner];
+				NSString *skuCompareFieldName = [PromoCodeOperation scanNameForFormField:@"search-param-compare-sku" withScanner:searchFormScanner];
+				NSString *skuValueFieldName = [PromoCodeOperation scanNameForFormField:@"search-param-value-sku" withScanner:searchFormScanner];
+                NSString *hiddenFieldName2 = [PromoCodeOperation scanFormFieldType:@"hidden" withScanner:searchFormScanner];
+                NSString *statusFieldName = [PromoCodeOperation scanNameForFormField:@"search-param-value-statusSearch" withScanner:searchFormScanner];
+                NSString *hiddenFieldName3 = [PromoCodeOperation scanFormFieldType:@"hidden" withScanner:searchFormScanner];
 				NSString *appTypeFieldName = [PromoCodeOperation scanNameForFormField:@"search-param-value-" withScanner:searchFormScanner];
+                NSString *hiddenFieldName4 = [PromoCodeOperation scanFormFieldType:@"hidden" withScanner:searchFormScanner];
+                NSString *searchFieldName = [PromoCodeOperation scanFormFieldType:@"submit" withScanner:searchFormScanner];
 				if (nameCompareFieldName && nameValueFieldName && appleIDFieldName && statusFieldName) {
 					NSDictionary *bodyDict;
 					if (appTypeFieldName) {
 						bodyDict = [NSDictionary dictionaryWithObjectsAndKeys:
-									@"0", nameCompareFieldName,
+									@"4", nameCompareFieldName,
 									@"", nameValueFieldName,
-									productID, appleIDFieldName, 
+                                    @"4", skuCompareFieldName,
+                                    @"", skuValueFieldName,
+									productID, appleIDFieldName,
+                                    @"", hiddenFieldName1,
+                                    @"", hiddenFieldName2,
+                                    @"", hiddenFieldName3,
 									@"WONoSelectionString", statusFieldName,
 									@"WONoSelectionString", appTypeFieldName,
+                                    @"", hiddenFieldName4,
+                                    @"Search", searchFieldName,
 									nil];
 					} else {
 						bodyDict = [NSDictionary dictionaryWithObjectsAndKeys:
-									@"0", nameCompareFieldName,
+									@"4", nameCompareFieldName,
 									@"", nameValueFieldName,
-									productID, appleIDFieldName, 
+                                    @"4", skuCompareFieldName,
+                                    @"", skuValueFieldName,
+									productID, appleIDFieldName,
+                                    @"", hiddenFieldName1,
+                                    @"", hiddenFieldName2,
+                                    @"", hiddenFieldName3,
+                                    @"", hiddenFieldName4,
+                                    @"Search", searchFieldName,
 									@"WONoSelectionString", statusFieldName,
 									nil];
 					}
@@ -152,11 +173,14 @@
 		NSData *searchResultPageData = operation.inputOperation.data;
 		
 		NSString *searchResultPage = [[[NSString alloc] initWithData:searchResultPageData encoding:NSUTF8StringEncoding] autorelease];
+        
 		if (searchResultPage) {
 			NSScanner *searchResultScanner = [NSScanner scannerWithString:searchResultPage];
-			if ([searchResultScanner scanUpToString:@"<div class=\"software-column-type-col-0\">" intoString:NULL]) {
-				[searchResultScanner scanUpToString:@"<a href=\"" intoString:NULL];
-				[searchResultScanner scanString:@"<a href=\"" intoString:NULL];
+            NSString *scannedString;
+			if ([searchResultScanner scanUpToString:@"<td class=\"software-column-type-col-0\">" intoString:&scannedString]) {
+                BOOL bRet;
+                bRet = [searchResultScanner scanUpToString:@"<a href=\"" intoString:&scannedString];
+				bRet = [searchResultScanner scanString:@"<a href=\"" intoString:&scannedString];
 				NSString *appPageURLPath = nil;
 				[searchResultScanner scanUpToString:@"\"" intoString:&appPageURLPath];
 				NSString *appPageURLString = [NSString stringWithFormat:@"https://itunesconnect.apple.com%@", appPageURLPath];
@@ -193,7 +217,7 @@
 	step7.startBlock = ^(DownloadStepOperation *operation) {
 		NSData *currentVersionPageData = operation.inputOperation.data;
 		NSString *currentVersionPage = [[[NSString alloc] initWithData:currentVersionPageData encoding:NSUTF8StringEncoding] autorelease];
-		NSString *promoCodesURLPath = [currentVersionPage stringByMatching:@"<a href=\"(.*?)\"><span class=\"promo-codes" capture:1];
+		NSString *promoCodesURLPath = [currentVersionPage stringByMatching:@"<a class=\"blue-btn\" href=\"(.*?)\">Promo Codes" capture:1];
 		if (!promoCodesURLPath) {
 			[PromoCodeOperation errorNotification:@"could not find promo codes link, perhaps the app was removed from sale?"];
 			[operation cancel];
@@ -235,8 +259,14 @@
 		[viewHistoryScanner scanString:@"action=\"" intoString:NULL];
 		NSString *viewHistoryFormAction = nil;
 		[viewHistoryScanner scanUpToString:@"\"" intoString:&viewHistoryFormAction];
+        
+        [viewHistoryScanner scanUpToString:@"upload-app-button" intoString:NULL];
+        [viewHistoryScanner scanUpToString:@"<a href=\"" intoString:NULL];
+        [viewHistoryScanner scanString:@"<a href=\"" intoString:NULL];
+        NSString *historyURL = nil;
+        [viewHistoryScanner scanUpToString:@"\"" intoString:&historyURL];
 		
-		if (![viewHistoryScanner scanUpToString:@"class=\"customActionButton\"" intoString:NULL] || ![viewHistoryScanner scanUpToString:@"name=\"" intoString:NULL]) {
+/*		if (![viewHistoryScanner scanUpToString:@"class=\"customActionButton\"" intoString:NULL] || ![viewHistoryScanner scanUpToString:@"name=\"" intoString:NULL]) {
 			[PromoCodeOperation errorNotification:@"could not parse promo code request page"];
 			[operation cancel];
 		}
@@ -244,7 +274,7 @@
 		[viewHistoryScanner scanString:@"name=\"" intoString:NULL];
 		NSString *viewHistoryButtonName = nil;
 		[viewHistoryScanner scanUpToString:@"\"" intoString:&viewHistoryButtonName];
-		
+		*/
 		if (![viewHistoryScanner scanUpToString:@"<td class=\"metadata-field-code" intoString:NULL] || ![viewHistoryScanner scanUpToString:@"name=\"" intoString:NULL]) {
 			[PromoCodeOperation errorNotification:@"could not parse promo code request page"];
 			[operation cancel];
@@ -254,13 +284,14 @@
 		NSString *numberOfCodesFieldName = nil;
 		[viewHistoryScanner scanUpToString:@"\"" intoString:&numberOfCodesFieldName];
 		
+        NSString *tempString = nil;
 		if (![viewHistoryScanner scanUpToString:@"class=\"continueActionButton\"" intoString:NULL]) {
 			[PromoCodeOperation errorNotification:@"could not parse promo code request page"];
 			[operation cancel];
 		}
 		[viewHistoryScanner scanString:@"class=\"continueActionButton\"" intoString:NULL];
-		[viewHistoryScanner scanUpToString:@"name=\"" intoString:NULL];
-		[viewHistoryScanner scanString:@"name=\"" intoString:NULL];
+		[viewHistoryScanner scanUpToString:@"name=\"" intoString:&tempString];
+		[viewHistoryScanner scanString:@"name=\"" intoString:&tempString];
 		NSString *continueButtonName = nil;
 		[viewHistoryScanner scanUpToString:@"\"" intoString:&continueButtonName];
 		if (!continueButtonName) {
@@ -269,13 +300,8 @@
 		}
 		
 		if (numberOfCodes == 0) {
-			NSString *viewHistoryURLString = [NSString stringWithFormat:@"https://itunesconnect.apple.com%@", viewHistoryFormAction];
-			NSDictionary *bodyDict = [NSDictionary dictionaryWithObjectsAndKeys:
-									  @"58", [NSString stringWithFormat:@"%@.x", viewHistoryButtonName], 
-									  @"14", [NSString stringWithFormat:@"%@.y", viewHistoryButtonName], 
-									  @"", numberOfCodesFieldName,
-									  nil];
-			operation.request = [PromoCodeOperation postRequestWithURL:[NSURL URLWithString:viewHistoryURLString] body:bodyDict];
+			NSString *viewHistoryURLString = [NSString stringWithFormat:@"https://itunesconnect.apple.com%@", historyURL];
+			operation.request = [PromoCodeOperation  postRequestWithURL:[NSURL URLWithString:viewHistoryURLString] body:nil];
 		} else {
 			NSString *requestCodesURLString = [NSString stringWithFormat:@"https://itunesconnect.apple.com%@", viewHistoryFormAction];
 			NSDictionary *bodyDict = [NSDictionary dictionaryWithObjectsAndKeys:
@@ -453,6 +479,19 @@
 		return fieldName;
 	}
 	return nil;
+}
+
++(NSString *)scanFormFieldType:(NSString *)type withScanner:(NSScanner *)scanner
+{
+    [scanner scanUpToString:@"type=\"" intoString:NULL];
+    [scanner scanUpToString:type intoString:NULL];
+    [scanner scanUpToString:@"name=\"" intoString:NULL];
+    if ([scanner scanString:@"name=\"" intoString:NULL]) {
+        NSString *fieldName = nil;
+        [scanner scanUpToString:@"\"" intoString:&fieldName];
+        return fieldName;
+    }
+    return nil;
 }
 
 + (NSURLRequest *)postRequestWithURL:(NSURL *)URL body:(NSDictionary *)bodyDict

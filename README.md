@@ -1,24 +1,28 @@
 #AppSales
 
+---
+
+***Announcement***
+
+*AppSales used to support downloading reviews, promo codes and payments. Because these features relied on scraping either iTunes Connect or the App Store, they have often not worked reliably or stopped working entirely when the iTunes Connect website changed. I haven't used these features a lot myself and I don't have the time anymore to patch them constantly, so I've reduced AppSales to its core functionality: downloading sales reports.*
+
+*You can of course still use (or fork) one of the older versions if you rely on these features and can live with (or fix) the bugginess.*
+
+---
+
 AppSales allows iOS and Mac App Store developers to download and analyze their sales reports from iTunes Connect on the iPhone.
 
 ##Features
 * Automatic download of daily and weekly sales reports from iTunes Connect
 * Stacked bar graphs to see all your sales at a glance
 * Show your sales on a world map
-* View actual payments by Apple on a calendar
 * Group daily reports by fiscal or calendar month to predict your next payment
 * Automatic conversion to your currency of choice
-* Download customer reviews of your apps
 * Import reports that you downloaded elsewhere (for example with [AppViz](http://www.ideaswarm.com) on your Mac) via iTunes File Sharing
 * Optional push notifications when new reports are available via Boxcar
 
-Please see the screenshot below for a visual guide to AppSales' main interface and some tips and tricks.
-
 ##Requirements
-AppSales requires the iOS 5.0 SDK or later.
-
-Because there is no API to access some parts of iTunes Connect, AppSales scrapes [itunesconnect.apple.com](https://itunesconnect.apple.com). This means that even small changes on this website can break some functionality. In most cases, this is easy to fix and I'll try to make a new version available here. The report download itself uses Apple's auto-ingestion interface to iTunes Connect and should generally be unaffected by changes to the website.
+AppSales requires the iOS 7.0 SDK or later.
 
 ##Push Notifications
 Because sales reports are not always available at the same time, I run a web service to send out push notifications when the daily reports have been generated.
@@ -36,8 +40,6 @@ If you'd like to support this effort, please consider a donation via PayPal or F
 
 <a href="https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=YDQN4S3WVRCBU&lc=US&item_name=AppSales&no_note=1&currency_code=USD"><img src="https://www.paypalobjects.com/en_US/i/btn/btn_donate_SM.gif"/></a> <a href="http://flattr.com/thing/366574/AppSales" target="_blank">
 <img src="http://api.flattr.com/button/flattr-badge-large.png" alt="Flattr this" title="Flattr this" border="0" /></a>
-
-![AppSales Screenshot](http://github.com/omz/AppSales-Mobile/raw/master/Screenshot.png)
 
 ##License
 In addition to the BSD-2 license below, I ask that you do not publicly distribute the app as a whole in binary form (e.g. on the App Store).

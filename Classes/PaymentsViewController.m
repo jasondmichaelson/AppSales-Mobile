@@ -34,7 +34,7 @@
 - (void)loadView
 {
 	[super loadView];
-	self.view.backgroundColor = [UIColor scrollViewTexturedBackgroundColor];
+	self.view.backgroundColor = [UIColor whiteColor];
 	
 	self.scrollView = [[[UIScrollView alloc] initWithFrame:self.view.bounds] autorelease];
 	scrollView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
@@ -62,6 +62,7 @@
 	
 	NSNumberFormatter *numberFormatter = [[[NSNumberFormatter alloc] init] autorelease];
 	[numberFormatter setMaximumFractionDigits:2];
+    [numberFormatter setMinimumFractionDigits:2];
 	[numberFormatter setGroupingSize:3];
 	[numberFormatter setUsesGroupingSeparator:YES];
 	
@@ -95,7 +96,7 @@
             if ([payments count] > 0) {
                 NSNumber *sum = [payments valueForKeyPath:@"@sum.amount"];
                 NSString *currency = [[payments objectAtIndex:0] valueForKey:@"currency"];
-                NSString *label = [NSString stringWithFormat:@"%@%@", [numberFormatter stringFromNumber:sum], [[CurrencyManager sharedManager] currencySymbolForCurrency:currency]];
+                NSString *label = [NSString stringWithFormat:@"%@%@", [[CurrencyManager sharedManager] currencySymbolForCurrency:currency], [numberFormatter stringFromNumber:sum]];
                 NSMutableDictionary *labelsForYear = [labelsByYear objectForKey:year];
                 if (!labelsForYear) {
                     labelsForYear = [NSMutableDictionary dictionary];

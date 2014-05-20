@@ -128,7 +128,8 @@
         [reviewsCountFetchRequest setPredicate:[NSPredicate predicateWithFormat:pred argumentArray:args]];
 	} else {
         [pred appendString:@" AND (product == nil"];
-        for (Product* p in self.selectedProducts) {
+        for (int i = 0; i < self.selectedProducts.count; i++) {
+//        for (Product* p in self.selectedProducts) {
             [pred appendString:@" OR product == %@"];
         }
         [pred appendString:@")"];
@@ -155,7 +156,8 @@
         [reviewsCountFetchRequest setPredicate:[NSPredicate predicateWithFormat:pred argumentArray:args]];
 	} else {
         [pred appendString:@" AND (product == nil"];
-        for (Product* p in self.selectedProducts) {
+        for (int i = 0; i < selectedProducts.count; i++) {
+//        for (Product* p in self.selectedProducts) {
             [pred appendString:@" OR product == %@"];
         }
         [pred appendString:@")"];

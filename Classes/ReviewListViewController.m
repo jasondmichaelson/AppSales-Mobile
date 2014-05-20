@@ -120,7 +120,8 @@
 
     if (products) {
         [pred appendString:@"(product == nil"];
-        for (Product* p in products) {
+        for (int i = 0; i < products.count; i++) {
+//        for (Product* p in products) {
             [pred appendString:@" OR product == %@"];
         }
         [pred appendString:@")"];
