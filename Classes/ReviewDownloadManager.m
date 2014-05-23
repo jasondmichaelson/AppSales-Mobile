@@ -56,7 +56,6 @@
 		NSDictionary *storeInfo = [storeInfos objectForKey:country];
 		NSString *storeID = [storeInfo objectForKey:@"storeID"];
 		for (Product *product in products) {
-            NSString *parentSKU = product.parentSKU;
 			if (!product.parentSKU || product.parentSKU.length > 1) continue; //don't download reviews for in-app-purchases
 			ReviewDownload *download = [[[ReviewDownload alloc] initWithProduct:product storeFront:storeID countryCode:country] autorelease];
 			download.delegate = self;
