@@ -77,9 +77,9 @@
 	NSMutableArray *filteredApps = [NSMutableArray array];
 	for (Product *app in allApps) {
 		//Don't show in-app purchases
-		//if (!app.parentSKU) {
+		if (!app.parentSKU || app.parentSKU.length > 1) {
 			[filteredApps addObject:app];
-		//}
+		}
 	}
 	self.sortedApps = [NSArray arrayWithArray:filteredApps];
 	[self.tableView reloadData];
